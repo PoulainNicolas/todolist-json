@@ -8,4 +8,11 @@
 // $json_data=json_decode($file, true);
 // var_dump($json_data);
 
+    //Récupération du fichier JSON
+    $content = file_get_contents('todo.json');
+    // Transformer le resultat sous forme de tableau
+    $str = json_decode($content,true);
+    // print_r($str);
+
+
 ?>

@@ -1,33 +1,45 @@
 <?php
-    $newtask= $_POST["newtask"];
+// je récupère ce que j'encode dans l'input 'newtask'
+    $newtask = $_POST['newtask'];
+    echo $newtask;
 
-    // sanitisation
+// sanitisation
 
-    if(isset($_POST['newtask']) || !empty($_POST['newtask'])){
-    $result=filter_input(INPUT_POST, 'newtask', FILTER_SANITIZE_STRING);
+$options = array(
+    $newtask => FILTER_SANITIZE_STRING
+ );
 
-        if($result !== null && $result !== false){
+ if(isset($newtask) AND !empty($newtask)){
 
-            $file='todo.json';
+    $result = filter_input_array(INPUT_POST, $options); 
+    if ($result != null AND $result != FALSE){
 
-            // ouvrir le fichier pour avoir le contenu existant
+// récupérer contenu json dans une variable
+    $json=file_get_contents('todo.json');
 
-            $current = file_get_contents($file);
-            var_dump(json_decode($current));
+// decoder json pour convertir json string en données php
 
-            // ajouter un élément au fichier
-            $current .= $newtask;
-            var_dump($newtask);
+    $decode=json_decode($json, true);
+    // var_dump($decode);
 
-            $json = json_encode($current);
-            var_dump($json);
-            // écrire le contenu dans le fichier
-            // 
-            file_put_contents($file, $current);
+    // création d'un array
+    $newarray = array(
+        'task' => $_POST['newtask'],
+        'archived' => 0
+    );
 
-            // Header('Location:index.php');
+    $decode[] = $newarray;
 
-          
-        }
-    }
+    $encode = json_encode($decode);
+    // var_dump($encode);
+
+    file_put_contents('todo.json', $encode);
+
+    header('Location: index.php');
+
+
+ }
+}
+
+
 ?>
